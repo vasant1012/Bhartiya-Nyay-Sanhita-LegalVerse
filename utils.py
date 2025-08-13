@@ -3,6 +3,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -24,11 +25,10 @@ def clean_text(text):
     return ' '.join(tokens)
 
 
-def merge_rare_labels(df, min_samples, label_col):
-    counts = df[label_col].value_counts()
-    rare = counts[counts < min_samples].index.tolist()
-    df = df.copy()
-    if rare:
-        df[label_col] = df[label_col].apply(
-            lambda v: v if v not in rare else "Other")
-    return df, rare
+def get_metrics(y_true, y_pred):
+    acc = accuracy_score(y_true, y_pred)
+    macro_p, macro_r, macro_f, _ = precision_recall_fscore_support(
+        y_true, y_pred, average='macro', zero_division=0)
+    weighted_p, weighted_r, weighted_f, _ = precision_recall_fscore_support(
+        y_true, y_pred, average='weighted', zero_division=0)
+    return [acc, macro_p, macro_r, macro_f, weighted_p, weighted_r, weighted_f]
