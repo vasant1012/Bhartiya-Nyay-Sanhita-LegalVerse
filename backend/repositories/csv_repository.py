@@ -7,13 +7,42 @@ import pandas as pd
 from backend.schemas.section import ChapterSummary, Section
 
 ALIASES = {
-    'chapter_number': ['Chapter Number', 'Chapter_Number', 'chapter_number'],
-    'chapter_name': ['Chapter Name', 'Chapter_Name', 'chapter_name'],
-    'chapter_subtype': ['Chapter Subtype', 'Chapter_Subtype', 'chapter_subtype'],
-    'section_number': ['Section Number', 'Section_Number', 'section_number'],
-    'section_name': ['Section Name', 'Section_Name', 'section_name'],
-    'description': ['Description', 'description'],
+    "chapter_number": [
+        "Chapter",
+        "Chapter Number",
+        "Chapter_Number",
+        "chapter_number",
+    ],
+    "chapter_name": [
+        "Chapter_name",
+        "Chapter Name",
+        "Chapter_Name",
+        "chapter_name",
+    ],
+    "chapter_subtype": [
+        "Chapter_subtype",
+        "Chapter Subtype",
+        "Chapter_Subtype",
+        "chapter_subtype",
+    ],
+    "section_number": [
+        "Section",
+        "Section Number",
+        "Section_Number",
+        "section_number",
+    ],
+    "section_name": [
+        "Section_name",
+        "Section Name",
+        "Section_Name",
+        "section_name",
+    ],
+    "description": [
+        "Description",
+        "description",
+    ],
 }
+
 
 class CsvSectionRepository:
     def __init__(self, path: Path):

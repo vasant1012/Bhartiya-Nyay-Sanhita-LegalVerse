@@ -4,13 +4,13 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.main import create_app
-from backend.repositories.csv_repository import CsvSectionRepository
 from backend.services.insight_service import InsightService
 from backend.services.search_service import SearchService
+from backend.tests.fixtures.json_repository import JsonFixtureRepository
 
 
 class Settings:
-    app_version='test'; data_file=Path(__file__).parent/'fixtures'/'bns_sections.csv'
+    app_version='test'; data_file=Path(__file__).parent/'fixtures'/'bns_sections.json'
 
 class FaissStub:
     available=False; error='not loaded'
@@ -25,7 +25,7 @@ class Neo4jStub:
 
 class TestContainer:
     def __init__(self):
-        self.settings=Settings(); self.sections=CsvSectionRepository(self.settings.data_file); self.sections.load()
+        self.settings=Settings(); self.sections=JsonFixtureRepository(self.settings.data_file); self.sections.load()
         self.faiss=FaissStub(); self.neo4j=Neo4jStub()
         self.search=SearchService(self.sections,self.faiss); self.insights=InsightService(self.sections,self.neo4j)
 

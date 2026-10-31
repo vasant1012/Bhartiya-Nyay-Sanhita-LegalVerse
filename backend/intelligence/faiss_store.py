@@ -6,7 +6,13 @@ from typing import Any
 
 
 class FaissStore:
-    def __init__(self, index_path: Path, metadata_path: Path, model_name: str, enabled: bool = True):
+    def __init__(
+        self,
+        index_path: Path,
+        metadata_path: Path,
+        model_name: str,
+        enabled: bool = True,
+    ):
         self.index_path = Path(index_path)
         self.metadata_path = Path(metadata_path)
         self.model_name = model_name
@@ -26,12 +32,12 @@ class FaissStore:
         try:
             import faiss
             from sentence_transformers import SentenceTransformer
+
             if not self.index_path.exists() or not self.metadata_path.exists():
-                self.error = 'FAISS artifacts not built'
+                self.error = "FAISS artifacts not built"
                 return
             self.index = faiss.read_index(str(self.index_path))
-            self.metadata = json.loads(
-                self.metadata_path.read_text(encoding='utf-8'))
+            self.metadata = json.loads(self.metadata_path.read_text(encoding="utf-8"))
             self.model = SentenceTransformer(self.model_name)
         except Exception as exc:  # noqa: BLE001
             self.error = str(exc)
@@ -47,5 +53,5 @@ class FaissStore:
         for score, idx in zip(scores[0], indices[0]):
             if idx < 0 or idx >= len(self.metadata):
                 continue
-            results.append({**self.metadata[idx], 'score': float(score)})
+            results.append({**self.metadata[idx], "score": float(score)})
         return results
