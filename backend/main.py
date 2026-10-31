@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.routes import router
-from app.core.container import AppContainer
+
+from backend.api.routes import router  # type: ignore
+from backend.core.container import AppContainer
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -10,7 +13,7 @@ async def lifespan(app: FastAPI):
     app.state.container = container
     try:
         container.sections.load()
-    except Exception:
+    except Exception:  # noqa: BLE001, S110
         pass
     container.faiss.load()
     container.neo4j.connect()

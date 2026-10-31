@@ -1,8 +1,14 @@
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path.cwd()))
+
 from fastapi import APIRouter, HTTPException, Query, Request
-from app.schemas.common import Availability, HealthResponse
-from app.schemas.insight import SectionInsights
-from app.schemas.search import SearchRequest, SearchResponse
-from app.schemas.section import ChapterSummary, Section, SectionSummary
+
+from backend.schemas.common import Availability, HealthResponse
+from backend.schemas.insight import SectionInsights
+from backend.schemas.search import SearchRequest, SearchResponse
+from backend.schemas.section import ChapterSummary, Section, SectionSummary
 
 router = APIRouter()
 

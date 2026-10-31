@@ -1,10 +1,13 @@
 from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
-from app.main import create_app
-from app.repositories.csv_repository import CsvSectionRepository
-from app.services.search_service import SearchService
-from app.services.insight_service import InsightService
+
+from backend.main import create_app
+from backend.repositories.csv_repository import CsvSectionRepository
+from backend.services.insight_service import InsightService
+from backend.services.search_service import SearchService
+
 
 class Settings:
     app_version='test'; data_file=Path(__file__).parent/'fixtures'/'bns_sections.csv'

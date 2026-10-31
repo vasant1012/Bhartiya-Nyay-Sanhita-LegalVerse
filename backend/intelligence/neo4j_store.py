@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 class Neo4jStore:
     def __init__(self, uri: str, username: str, password: str, database: str = 'neo4j', enabled: bool = True):
         self.uri, self.username, self.password = uri, username, password
@@ -19,7 +20,7 @@ class Neo4jStore:
             from neo4j import GraphDatabase
             self.driver = GraphDatabase.driver(self.uri, auth=(self.username, self.password))
             self.driver.verify_connectivity()
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             self.error = str(exc)
             self.driver = None
 

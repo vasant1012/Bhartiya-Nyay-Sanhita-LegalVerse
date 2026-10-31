@@ -1,5 +1,7 @@
 from pydantic import BaseModel
+
 from .section import SectionSummary
+
 
 class RelatedSection(BaseModel):
     section: SectionSummary

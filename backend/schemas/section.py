@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
+
 class Section(BaseModel):
     model_config = ConfigDict(extra='ignore')
     section_number: str

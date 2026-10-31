@@ -1,6 +1,8 @@
 import pytest
 from pydantic import ValidationError
-from app.schemas.search import SearchRequest
+
+from backend.schemas.search import SearchRequest
+
 
 def test_blank_query_rejected():
     with pytest.raises(ValidationError): SearchRequest(query='   ')

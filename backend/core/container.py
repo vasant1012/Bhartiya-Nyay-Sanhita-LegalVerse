@@ -1,9 +1,10 @@
-from app.core.config import get_settings
-from app.repositories.csv_repository import CsvSectionRepository
-from app.intelligence.faiss_store import FaissStore
-from app.intelligence.neo4j_store import Neo4jStore
-from app.services.search_service import SearchService
-from app.services.insight_service import InsightService
+from backend.core.config import get_settings
+from backend.intelligence.faiss_store import FaissStore
+from backend.intelligence.neo4j_store import Neo4jStore
+from backend.repositories.csv_repository import CsvSectionRepository
+from backend.services.insight_service import InsightService
+from backend.services.search_service import SearchService
+
 
 class AppContainer:
     def __init__(self):

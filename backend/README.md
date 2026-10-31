@@ -27,13 +27,13 @@ pytest
 ## Build FAISS index
 
 ```bash
-python scripts_build_indexes.py --data ../data/bns_sections.csv --output-dir ../artifacts/faiss_indexes
+python backend/scripts_build_indexes.py --data data/bns_sections.csv --output-dir backend/artifacts/faiss_indexes
 ```
 
 ## Load base Neo4j graph
 
 ```bash
-python scripts_load_neo4j.py --data ../data/bns_sections.csv --password '<your-password>'
+python backend/scripts_load_neo4j.py --data data/bns_sections.csv --password '<your-password>'
 ```
 
 The Neo4j bootstrap creates Chapter and Section nodes plus `BELONGS_TO` relationships. Concepts, references, and semantic relationships must be added only after their extraction pipelines are evaluated.

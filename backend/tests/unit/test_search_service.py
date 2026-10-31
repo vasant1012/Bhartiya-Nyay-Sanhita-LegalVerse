@@ -1,4 +1,5 @@
-from app.schemas.search import SearchRequest
+from backend.schemas.search import SearchRequest
+
 
 def test_exact_section_lookup(container):
     result=container.search.search(SearchRequest(query='316'))

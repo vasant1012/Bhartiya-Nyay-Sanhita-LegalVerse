@@ -1,5 +1,6 @@
-from app.schemas.insight import RelatedSection, SectionInsights
-from app.schemas.section import SectionSummary
+from backend.schemas.insight import RelatedSection, SectionInsights
+from backend.schemas.section import SectionSummary
+
 
 class InsightService:
     def __init__(self, repository, neo4j_store):

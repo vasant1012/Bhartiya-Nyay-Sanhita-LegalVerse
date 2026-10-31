@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class Availability(BaseModel):
     source_data: bool
     keyword_search: bool

@@ -1,6 +1,9 @@
 from enum import Enum
+
 from pydantic import BaseModel, Field, field_validator
+
 from .section import SectionSummary
+
 
 class SearchMode(str, Enum):
     recommended = 'recommended'

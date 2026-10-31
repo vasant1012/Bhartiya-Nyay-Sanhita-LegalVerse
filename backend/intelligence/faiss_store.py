@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import Any
+
 
 class FaissStore:
     def __init__(self, index_path: Path, metadata_path: Path, model_name: str, enabled: bool = True):
@@ -28,9 +30,10 @@ class FaissStore:
                 self.error = 'FAISS artifacts not built'
                 return
             self.index = faiss.read_index(str(self.index_path))
-            self.metadata = json.loads(self.metadata_path.read_text(encoding='utf-8'))
+            self.metadata = json.loads(
+                self.metadata_path.read_text(encoding='utf-8'))
             self.model = SentenceTransformer(self.model_name)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             self.error = str(exc)
             self.index = None
             self.model = None

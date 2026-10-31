@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 from pathlib import Path
+
 import pandas as pd
-from app.schemas.section import ChapterSummary, Section
+
+from backend.schemas.section import ChapterSummary, Section
 
 ALIASES = {
     'chapter_number': ['Chapter Number', 'Chapter_Number', 'chapter_number'],

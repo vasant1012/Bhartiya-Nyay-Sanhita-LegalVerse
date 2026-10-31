@@ -1,9 +1,18 @@
 from __future__ import annotations
+
 import re
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from app.schemas.search import MatchEvidence, SearchRequest, SearchResponse, SearchResult
-from app.schemas.section import SectionSummary
+
+from backend.schemas.search import (
+    MatchEvidence,
+    SearchRequest,
+    SearchResponse,
+    SearchResult,
+)
+from backend.schemas.section import SectionSummary
+
 
 class SearchService:
     def __init__(self, repository, faiss_store):
