@@ -1,4 +1,0 @@
-import { ArrowLeft, BookOpen } from 'lucide-react';
-export function SectionHandoff({sectionNumber,onBack}:{sectionNumber:string;onBack:()=>void}){
- return <div className="p-7"><div className="rounded-2xl border border-legal-border bg-white p-7 shadow-sm"><button onClick={onBack} className="flex items-center gap-2 text-sm font-semibold text-legal-navy"><ArrowLeft size={16}/>Back to search results</button><div className="mt-7 flex items-center gap-3"><div className="grid size-12 place-items-center rounded-xl bg-amber-50 text-amber-700"><BookOpen/></div><div><div className="text-xs font-bold uppercase tracking-wider text-legal-gold">Section {sectionNumber}</div><h2 className="mt-1 text-xl font-bold text-legal-text">Section Detail handoff successful</h2></div></div><p className="mt-5 text-sm text-legal-muted">Full statutory text and Smart Insights will be implemented in Phase 4.4.</p></div></div>
-}

@@ -1,5 +1,5 @@
 def test_health(client):
-    response = client.get("/api/v1/health")
+    response = client.get("/api/health")
     assert response.status_code == 200
     body = response.json()
     assert body["availability"]["source_data"] is True
@@ -7,18 +7,18 @@ def test_health(client):
 
 
 def test_sections(client):
-    response = client.get("/api/v1/sections")
+    response = client.get("/api/sections")
     assert response.status_code == 200
     assert len(response.json()) == 3
 
 
 def test_section_not_found(client):
-    assert client.get("/api/v1/sections/999").status_code == 404
+    assert client.get("/api/sections/999").status_code == 404
 
 
 def test_search(client):
     response = client.post(
-        "/api/v1/search",
+        "/api/search",
         json={
             "query": "dishonestly entrusted property",
             "mode": "recommended",
@@ -30,6 +30,6 @@ def test_search(client):
 
 
 def test_insight_fallback(client):
-    response = client.get("/api/v1/insights/sections/316")
+    response = client.get("/api/insights/sections/316")
     assert response.status_code == 200
     assert response.json()["partial_ml"] is True

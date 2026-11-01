@@ -1,0 +1,128 @@
+{
+  "overall": {
+    "reviewed": 60,
+    "label_counts": {
+      "partially_relevant": 28,
+      "relevant": 23,
+      "not_relevant": 9
+    },
+    "precision_strict": 0.3833,
+    "precision_useful": 0.85,
+    "weighted_quality": 0.6167,
+    "score_min": 0.555121,
+    "score_median": 0.714741,
+    "score_max": 0.936139
+  },
+  "by_score_band": {
+    "high": {
+      "reviewed": 20,
+      "label_counts": {
+        "partially_relevant": 6,
+        "relevant": 14
+      },
+      "precision_strict": 0.7,
+      "precision_useful": 1.0,
+      "weighted_quality": 0.85,
+      "score_min": 0.801669,
+      "score_median": 0.870344,
+      "score_max": 0.936139
+    },
+    "middle": {
+      "reviewed": 20,
+      "label_counts": {
+        "partially_relevant": 12,
+        "relevant": 7,
+        "not_relevant": 1
+      },
+      "precision_strict": 0.35,
+      "precision_useful": 0.95,
+      "weighted_quality": 0.65,
+      "score_min": 0.670569,
+      "score_median": 0.714741,
+      "score_max": 0.79876
+    },
+    "threshold_near": {
+      "reviewed": 20,
+      "label_counts": {
+        "relevant": 2,
+        "not_relevant": 8,
+        "partially_relevant": 10
+      },
+      "precision_strict": 0.1,
+      "precision_useful": 0.6,
+      "weighted_quality": 0.35,
+      "score_min": 0.555121,
+      "score_median": 0.617864,
+      "score_max": 0.645115
+    }
+  },
+  "by_rank": {
+    "1": {
+      "reviewed": 18,
+      "label_counts": {
+        "partially_relevant": 3,
+        "relevant": 15
+      },
+      "precision_strict": 0.8333,
+      "precision_useful": 1.0,
+      "weighted_quality": 0.9167,
+      "score_min": 0.583734,
+      "score_median": 0.871513,
+      "score_max": 0.936139
+    },
+    "2": {
+      "reviewed": 11,
+      "label_counts": {
+        "relevant": 4,
+        "partially_relevant": 5,
+        "not_relevant": 2
+      },
+      "precision_strict": 0.3636,
+      "precision_useful": 0.8182,
+      "weighted_quality": 0.5909,
+      "score_min": 0.617744,
+      "score_median": 0.721392,
+      "score_max": 0.841202
+    },
+    "3": {
+      "reviewed": 13,
+      "label_counts": {
+        "partially_relevant": 8,
+        "relevant": 2,
+        "not_relevant": 3
+      },
+      "precision_strict": 0.1538,
+      "precision_useful": 0.7692,
+      "weighted_quality": 0.4615,
+      "score_min": 0.555121,
+      "score_median": 0.641777,
+      "score_max": 0.871685
+    },
+    "4": {
+      "reviewed": 10,
+      "label_counts": {
+        "partially_relevant": 8,
+        "relevant": 2
+      },
+      "precision_strict": 0.2,
+      "precision_useful": 1.0,
+      "weighted_quality": 0.6,
+      "score_min": 0.610775,
+      "score_median": 0.704879,
+      "score_max": 0.794721
+    },
+    "5": {
+      "reviewed": 8,
+      "label_counts": {
+        "partially_relevant": 4,
+        "not_relevant": 4
+      },
+      "precision_strict": 0.0,
+      "precision_useful": 0.5,
+      "weighted_quality": 0.25,
+      "score_min": 0.561687,
+      "score_median": 0.616855,
+      "score_max": 0.709721
+    }
+  }
+}

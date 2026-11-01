@@ -1,14 +1,43 @@
-import { useState } from 'react';
+import {
+  useState,
+} from 'react';
 
-import { Header } from './components/Header';
-import { Sidebar, type Page } from './components/Sidebar';
+import {
+  Header,
+} from './components/Header';
 
-import { Explore } from './features/Explore';
-import { Placeholder } from './features/Placeholder';
-import { SmartSearch } from './features/SmartSearch';
-import { SectionHandoff } from './features/SectionHandoff';
+import {
+  Sidebar,
+  type Page,
+} from './components/Sidebar';
 
-import type { Navigate } from './types/app';
+import {
+  Explore,
+} from './features/Explore';
+
+import {
+  Placeholder,
+} from './features/Placeholder';
+
+import {
+  SmartSearch,
+} from './features/SmartSearch';
+
+import {
+  SectionDetail,
+} from './features/section/SectionDetail';
+
+import {
+  Chapters,
+} from './features/chapters/Chapters';
+
+import {
+  CorpusOverview,
+} from './features/insights/CorpusOverview';
+
+import type {
+  Navigate,
+} from './types/app';
 
 
 const metadata: Record<
@@ -18,6 +47,7 @@ const metadata: Record<
     subtitle: string;
   }
 > = {
+
   explore: {
     title: 'Explore',
     subtitle:
@@ -39,7 +69,7 @@ const metadata: Record<
   insights: {
     title: 'Insights',
     subtitle:
-      'Explore concepts and legal relationships',
+      'Explore BNS corpus intelligence',
   },
 
   bookmarks: {
@@ -53,46 +83,126 @@ const metadata: Record<
     subtitle:
       'LegalVerse and dataset information',
   },
+
 };
 
 
 export default function App() {
 
-  const [page, setPage] =
-    useState<Page>('explore');
+  /*
+   * Current SPA module.
+   */
+  const [
+    page,
+    setPage,
+  ] = useState<Page>(
+    'explore',
+  );
 
-  const [searchQuery, setSearchQuery] =
-    useState('');
 
+  /*
+   * Query handed from Explore
+   * into Smart Search.
+   */
+  const [
+    searchQuery,
+    setSearchQuery,
+  ] = useState('');
+
+
+  /*
+   * Section opened from Smart Search.
+   */
   const [
     selectedSection,
     setSelectedSection,
   ] = useState('');
 
 
+  /*
+   * Section opened from Chapters.
+   *
+   * This remains separate from selectedSection
+   * so Back returns to the correct parent module.
+   */
+  const [
+    chapterSection,
+    setChapterSection,
+  ] = useState('');
+
+
+  /*
+   * Central SPA navigation.
+   */
   const navigate: Navigate = (
     nextPage,
     options,
   ) => {
 
-    if (options?.query !== undefined) {
-      setSearchQuery(options.query);
+    /*
+     * Preserve query handed in
+     * from Explore.
+     */
+    if (
+      options?.query !== undefined
+    ) {
+
+      setSearchQuery(
+        options.query,
+      );
     }
 
-    if (nextPage !== 'search') {
+
+    /*
+     * Clear contextual Search section
+     * when leaving Search.
+     */
+    if (
+      nextPage !== 'search'
+    ) {
+
       setSelectedSection('');
     }
 
-    setPage(nextPage);
+
+    /*
+     * Clear contextual Chapter section
+     * when leaving Chapters.
+     */
+    if (
+      nextPage !== 'chapters'
+    ) {
+
+      setChapterSection('');
+    }
+
+
+    setPage(
+      nextPage,
+    );
   };
 
 
-  const meta = metadata[page];
+  const meta =
+    metadata[page];
 
+
+  /*
+   * -------------------------------------------------------
+   * MAIN SPA CONTENT RESOLVER
+   * -------------------------------------------------------
+   */
 
   const renderContent = () => {
 
-    if (page === 'explore') {
+    /*
+     * =====================================================
+     * 4.2 EXPLORE
+     * =====================================================
+     */
+    if (
+      page === 'explore'
+    ) {
 
       return (
         <Explore
@@ -102,25 +212,52 @@ export default function App() {
     }
 
 
-    if (page === 'search') {
+    /*
+     * =====================================================
+     * 4.3 SMART SEARCH
+     * =====================================================
+     */
+    if (
+      page === 'search'
+    ) {
 
-      if (selectedSection) {
+      /*
+       * ---------------------------------------------------
+       * 4.4 SECTION DETAIL
+       * opened from Smart Search
+       * ---------------------------------------------------
+       */
+      if (
+        selectedSection
+      ) {
 
         return (
-          <SectionHandoff
+          <SectionDetail
             sectionNumber={
               selectedSection
             }
+
             onBack={() =>
               setSelectedSection('')
+            }
+
+            onOpenSection={
+              setSelectedSection
             }
           />
         );
       }
 
+
+      /*
+       * Normal Smart Search workspace.
+       */
       return (
         <SmartSearch
-          initialQuery={searchQuery}
+          initialQuery={
+            searchQuery
+          }
+
           onOpenSection={
             setSelectedSection
           }
@@ -129,15 +266,97 @@ export default function App() {
     }
 
 
+    /*
+     * =====================================================
+     * 4.5 CHAPTERS
+     * =====================================================
+     */
+    if (
+      page === 'chapters'
+    ) {
+
+      /*
+       * ---------------------------------------------------
+       * 4.4 SECTION DETAIL
+       * opened from Chapters
+       * ---------------------------------------------------
+       */
+      if (
+        chapterSection
+      ) {
+
+        return (
+          <SectionDetail
+            sectionNumber={
+              chapterSection
+            }
+
+            onBack={() =>
+              setChapterSection('')
+            }
+
+            onOpenSection={
+              setChapterSection
+            }
+          />
+        );
+      }
+
+
+      /*
+       * Standard Chapters master/detail view.
+       */
+      return (
+        <Chapters
+          onOpenSection={
+            setChapterSection
+          }
+        />
+      );
+    }
+
+
+    /*
+     * =====================================================
+     * 4.6A INSIGHTS - CORPUS OVERVIEW
+     * =====================================================
+     */
+    if (
+      page === 'insights'
+    ) {
+
+      return (
+        <CorpusOverview />
+      );
+    }
+
+
+    /*
+     * =====================================================
+     * FUTURE MODULES
+     * =====================================================
+     *
+     * Bookmarks and About continue to use the common
+     * placeholder until Phase 4.7.
+     */
     return (
       <Placeholder
-        title={meta.title}
+        title={
+          meta.title
+        }
       />
     );
   };
 
 
+  /*
+   * -------------------------------------------------------
+   * GLOBAL APPLICATION SHELL
+   * -------------------------------------------------------
+   */
+
   return (
+
     <div
       className="
         flex
@@ -148,14 +367,25 @@ export default function App() {
       "
     >
 
+      {/*
+       * Persistent LegalVerse sidebar.
+       */}
       <Sidebar
         page={page}
-        onChange={(nextPage) =>
-          navigate(nextPage)
+
+        onChange={(
+          nextPage,
+        ) =>
+          navigate(
+            nextPage,
+          )
         }
       />
 
 
+      {/*
+       * Application workspace.
+       */}
       <main
         className="
           flex
@@ -165,12 +395,23 @@ export default function App() {
         "
       >
 
+        {/*
+         * Persistent context header.
+         */}
         <Header
-          title={meta.title}
-          subtitle={meta.subtitle}
+          title={
+            meta.title
+          }
+
+          subtitle={
+            meta.subtitle
+          }
         />
 
 
+        {/*
+         * Module workspace.
+         */}
         <div
           className="
             min-h-0
@@ -179,12 +420,15 @@ export default function App() {
           "
         >
 
-          {renderContent()}
+          {
+            renderContent()
+          }
 
         </div>
 
       </main>
 
     </div>
+
   );
 }

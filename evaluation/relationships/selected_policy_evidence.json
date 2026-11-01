@@ -1,0 +1,9 @@
+{
+  "reviewed_pairs": 27,
+  "relevant": 18,
+  "partially_relevant": 9,
+  "not_relevant": 0,
+  "strict_precision": 0.6667,
+  "useful_precision": 1.0,
+  "weighted_quality": 0.8333
+}

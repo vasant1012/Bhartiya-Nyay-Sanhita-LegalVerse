@@ -38,28 +38,137 @@ class Neo4jStore:
         if self.driver:
             self.driver.close()
 
-    def section_insights(self, section_number: str, limit: int = 5) -> dict:
+    def section_insights(
+        self,
+        section_number: str,
+        limit: int = 5,
+    ) -> dict:
+
+        empty_result = {
+            "concepts": [],
+            "cross_references": [],
+            "related_sections": [],
+        }
+
         if not self.available:
-            return {"concepts": [], "cross_references": [], "related_sections": []}
+            return empty_result
+
+        available_relationships = self.relationship_types()
+
+        result = dict(empty_result)
+
+        # ---------------------------------------
+        # Concepts
+        # ---------------------------------------
+
+        if "HAS_CONCEPT" in available_relationships:
+            query = """
+            MATCH
+                (s:Section {
+                    section_number: $section_number
+                })
+                -[:HAS_CONCEPT]->
+                (c:Concept)
+
+            RETURN DISTINCT
+                c.name AS concept
+
+            ORDER BY concept
+            """
+
+            with self.driver.session(database=self.database) as session: # type: ignore
+                rows = session.run(
+                    query,
+                    section_number=str(section_number),
+                )
+
+                result["concepts"] = [row["concept"] for row in rows if row["concept"]]
+
+        # ---------------------------------------
+        # Cross references
+        # ---------------------------------------
+
+        if "REFERENCES" in available_relationships:
+            query = """
+            MATCH
+                (s:Section {
+                    section_number: $section_number
+                })
+                -[:REFERENCES]->
+                (r:Section)
+
+            RETURN DISTINCT
+                r.section_number
+                    AS section_number
+
+            ORDER BY section_number
+            """
+
+            with self.driver.session(database=self.database) as session: # type: ignore
+                rows = session.run(
+                    query,
+                    section_number=str(section_number),
+                )
+
+                result["cross_references"] = [
+                    str(row["section_number"]) for row in rows if row["section_number"]
+                ]
+
+        # ---------------------------------------
+        # Semantic relationships
+        # ---------------------------------------
+
+        if "SEMANTICALLY_RELATED" in available_relationships:
+            query = """
+            MATCH
+                (s:Section {
+                    section_number: $section_number
+                })
+                -[rel:SEMANTICALLY_RELATED]->
+                (related:Section)
+
+            RETURN
+                related.section_number
+                    AS section_number,
+
+                rel.score
+                    AS score
+
+            ORDER BY
+                rel.score DESC
+
+            LIMIT $limit
+            """
+
+            with self.driver.session(database=self.database) as session: # type: ignore
+                rows = session.run(
+                    query,
+                    section_number=str(section_number),
+                    limit=limit,
+                )
+
+                result["related_sections"] = [
+                    {
+                        "section_number": str(row["section_number"]),
+                        "score": row["score"],
+                    }
+                    for row in rows
+                    if row["section_number"]
+                ]
+
+        return result
+
+    def relationship_types(self) -> set[str]:
+        if not self.available:
+            return set()
+
         query = """
-        MATCH (s:Section {section_number: $section_number})
-        OPTIONAL MATCH (s)-[:HAS_CONCEPT]->(c:Concept)
-        OPTIONAL MATCH (s)-[:REFERENCES]->(r:Section)
-        OPTIONAL MATCH (s)-[rel:SEMANTICALLY_RELATED]->(x:Section)
-        RETURN collect(DISTINCT c.name) AS concepts,
-               collect(DISTINCT r.section_number) AS cross_references,
-               collect(DISTINCT {section_number:x.section_number, score:rel.score})[0..$limit] AS related
+        CALL db.relationshipTypes()
+        YIELD relationshipType
+        RETURN relationshipType
         """
-        with self.driver.session(database=self.database) as session:
-            row = session.run(
-                query, section_number=str(section_number), limit=limit
-            ).single()
-            if not row:
-                return {"concepts": [], "cross_references": [], "related_sections": []}
-            return {
-                "concepts": [x for x in row["concepts"] if x],
-                "cross_references": [x for x in row["cross_references"] if x],
-                "related_sections": [
-                    x for x in row["related"] if x.get("section_number")
-                ],
-            }
+
+        with self.driver.session(database=self.database) as session: # type: ignore
+            result = session.run(query)
+
+            return {record["relationshipType"] for record in result}
