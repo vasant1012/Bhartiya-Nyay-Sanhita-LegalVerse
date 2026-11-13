@@ -148,6 +148,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# Node.js and Expo
+frontend/node_modules/*
+.expo/
+web-build/
+
 # Spyder project settings
 .spyderproject
 .spyproject
