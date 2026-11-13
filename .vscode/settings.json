@@ -1,4 +1,6 @@
 {
     "python.analysis.typeCheckingMode": "standard",
-    "python.analysis.languageServerMode": "default"
+    "python.analysis.languageServerMode": "default",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }

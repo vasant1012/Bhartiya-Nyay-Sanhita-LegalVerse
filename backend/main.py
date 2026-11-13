@@ -20,12 +20,15 @@ async def lifespan(app: FastAPI):
     yield
     container.neo4j.close()
 
+
 def create_app(container: AppContainer | None = None) -> FastAPI:
     app = FastAPI(title='LegalVerse API', version='0.1.0', lifespan=lifespan)
     if container is not None:
         app.state.container = container
-    app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*'])
+    app.add_middleware(CORSMiddleware, allow_origins=[
+                       '*'], allow_methods=['*'], allow_headers=['*'])
     app.include_router(router, prefix='/api')
     return app
+
 
 app = create_app()

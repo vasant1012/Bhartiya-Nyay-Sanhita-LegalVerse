@@ -1,4 +1,5 @@
 """Rebuild Neo4j SEMANTICALLY_RELATED edges using an approved policy file."""
+
 from __future__ import annotations
 
 import argparse
@@ -18,9 +19,21 @@ from backend.scripts_build_relationships import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--policy", type=Path, default=Path("backend/artifacts/relationship_policy.json"))
-    parser.add_argument("--index", type=Path, default=Path("backend/artifacts/faiss_indexes/bns_sections.index"))
-    parser.add_argument("--metadata", type=Path, default=Path("backend/artifacts/faiss_indexes/bns_sections.json"))
+    parser.add_argument(
+        "--policy",
+        type=Path,
+        default=Path("backend/artifacts/relationship_policy.json"),
+    )
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=Path("backend/artifacts/faiss_indexes/bns_sections.index"),
+    )
+    parser.add_argument(
+        "--metadata",
+        type=Path,
+        default=Path("backend/artifacts/faiss_indexes/bns_sections.json"),
+    )
     parser.add_argument("--batch-size", type=int, default=500)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
@@ -56,19 +69,24 @@ def main() -> None:
         top_k=int(policy["generation_top_k"]),
         min_score=float(policy["min_score"]),
     )
-    filtered = [item for item in candidates if item.rank <= int(policy["max_rank"])]
+    filtered = [item for item in candidates if item.rank <=
+                int(policy["max_rank"])]
 
     print(f"Policy version: {policy.get('policy_version', 'unknown')}")
     print(f"Policy status: {policy['status']}")
     print(f"Minimum score: {policy['min_score']}")
     print(f"Maximum rank: {policy['max_rank']}")
     print(f"Relationships passing policy: {len(filtered)}")
-    print(f"Covered source sections: {len({item.source_section for item in filtered})}")
+    covered_sources = {item.source_section for item in filtered}
+    print(f"Covered source sections: {len(covered_sources)}")
 
     if args.dry_run:
         print("Dry run complete. Neo4j was not modified.")
         for item in filtered[:10]:
-            print(f"  {item.source_section} -> {item.target_section} score={item.score:.6f} rank={item.rank}")
+            print(
+                f"  {item.source_section} -> {item.target_section} "
+                f"score={item.score:.6f} rank={item.rank}"
+            )
         return
 
     password = os.getenv("NEO4J_PASSWORD", "")
