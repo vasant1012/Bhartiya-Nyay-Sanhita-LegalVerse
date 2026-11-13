@@ -383,6 +383,20 @@ User Query
 The specific production ranking strategy and thresholds must be validated through retrieval experiments rather than assumed from initial implementation values.
 
 ---
+# User Interface 
+## Explore tabs
+
+
+## Smart Search
+
+
+## Chanpters
+
+
+## Insights
+
+
+---
 
 # Graceful Intelligence Fallback
 
