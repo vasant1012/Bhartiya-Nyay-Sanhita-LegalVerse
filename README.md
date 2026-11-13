@@ -385,16 +385,22 @@ The specific production ranking strategy and thresholds must be validated throug
 ---
 # User Interface 
 ## Explore tabs
+<img width="944" height="502" alt="UI1_explore" src="https://github.com/user-attachments/assets/03d5171d-9c13-4263-8b25-275b1f12ee1f" />
 
+<img width="944" height="503" alt="UI2_explore_input" src="https://github.com/user-attachments/assets/28af4f87-1c05-40cf-9777-896d66a3dfc9" />
 
 ## Smart Search
+<img width="941" height="497" alt="UI3_smart_search" src="https://github.com/user-attachments/assets/76285521-6edf-406f-8fe4-cbd4a702d8e4" />
 
+<img width="950" height="500" alt="UI5_smart_insights" src="https://github.com/user-attachments/assets/e0391982-36d6-40fb-8772-bd78232ff4aa" />
 
 ## Chanpters
-
+<img width="1368" height="741" alt="UI4_chapters" src="https://github.com/user-attachments/assets/79de8d3e-d68a-4a1e-bf2f-481501f81886" />
 
 ## Insights
+<img width="1360" height="628" alt="UI6_insight1" src="https://github.com/user-attachments/assets/40a8665f-7ad2-42d7-9adf-9eaf62f127ac" />
 
+<img width="1357" height="628" alt="UI8_insights2" src="https://github.com/user-attachments/assets/ba3241e5-835d-4192-8530-0732ee85da19" />
 
 ---
 
