@@ -15,13 +15,23 @@ class InsightService:
         warnings, partial = [], False
         if not self.neo4j_store.available:
             partial = True
-            warnings.append('Graph insights unavailable')
+            warnings.append("Graph insights unavailable")
         related = []
-        for item in data.get('related_sections', []):
-            target = self.repository.get_section(str(item['section_number']))
+        for item in data.get("related_sections", []):
+            target = self.repository.get_section(str(item["section_number"]))
             if target:
-                related.append(RelatedSection(section=SectionSummary(**target.model_dump()),
-                                              score=item.get('score'), relationship='semantic'))
-        return SectionInsights(section_number=section_number, concepts=data.get('concepts', []),
-                               cross_references=data.get('cross_references', []),
-                               related_sections=related, partial_ml=partial, warnings=warnings)
+                related.append(
+                    RelatedSection(
+                        section=SectionSummary(**target.model_dump()),
+                        score=item.get("score"),
+                        relationship="semantic",
+                    )
+                )
+        return SectionInsights(
+            section_number=section_number,
+            concepts=data.get("concepts", []),
+            cross_references=data.get("cross_references", []),
+            related_sections=related,
+            partial_ml=partial,
+            warnings=warnings,
+        )

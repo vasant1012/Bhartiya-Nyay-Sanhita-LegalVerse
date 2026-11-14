@@ -7,6 +7,7 @@ class Availability(BaseModel):
     semantic_search: bool
     graph_insights: bool
 
+
 class HealthResponse(BaseModel):
     status: str
     version: str

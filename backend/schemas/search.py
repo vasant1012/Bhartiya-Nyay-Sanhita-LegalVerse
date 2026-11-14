@@ -10,6 +10,7 @@ class SearchMode(str, Enum):
     keyword = 'keyword'
     semantic = 'semantic'
 
+
 class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=1000)
     mode: SearchMode = SearchMode.recommended
@@ -24,10 +25,12 @@ class SearchRequest(BaseModel):
             raise ValueError('query must not be blank')
         return value
 
+
 class MatchEvidence(BaseModel):
     matched_terms: list[str] = []
     concepts: list[str] = []
     method: str
+
 
 class SearchResult(BaseModel):
     section: SectionSummary
@@ -35,6 +38,7 @@ class SearchResult(BaseModel):
     score: float
     relevance: str
     evidence: MatchEvidence
+
 
 class SearchResponse(BaseModel):
     query: str

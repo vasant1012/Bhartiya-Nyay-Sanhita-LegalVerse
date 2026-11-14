@@ -9,6 +9,7 @@ class RelatedSection(BaseModel):
     relationship: str
     explanation: str | None = None
 
+
 class SectionInsights(BaseModel):
     section_number: str
     concepts: list[str] = []
