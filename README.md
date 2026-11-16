@@ -2,385 +2,1471 @@
 
 **Bharatiya Nyaya Sanhita Intelligence Explorer**
 
-LegalVerse is a source-first, ML-assisted research application built around the Bharatiya Nyaya Sanhita (BNS) section dataset. The product is designed to help users explore statutory provisions, search using legal or plain-language queries, discover related sections, and surface explainable smart insights while keeping original statutory text clearly separated from ML-derived information.
+LegalVerse is a desktop-first, source-first legal research demo built on Bharatiya Nyaya Sanhita (BNS) section data.
 
-> LegalVerse is intended as a research and educational aid. It does not provide legal advice or determine whether a provision legally applies to a specific case.
+It combines:
+
+- statutory section browsing;
+- keyword retrieval;
+- FAISS-based semantic search;
+- hybrid search;
+- Neo4j relationship intelligence;
+- explainable search results;
+- Smart Insights;
+- chapter exploration;
+- corpus-level insights;
+- browser-local bookmarks.
+
+> **Important:** LegalVerse is a research and educational demonstration. Search rankings, semantic relationships, and Smart Insights are not legal advice and do not establish that a provision applies to a particular matter.
 
 ---
 
-## Current Project Status
+# Project Status
 
-- **Phase 1 - UI/UX Design:** Completed / frozen
-- **Phase 2 - Architecture Design:** Completed / frozen
-- **Phase 3 - Backend Development:** Backend baseline implemented; real dataset, FAISS artifact, and live Neo4j integration testing pending
-- **Phase 4 - Frontend Development:** Not started
+The core LegalVerse demo implementation is complete.
 
-Detailed project status is maintained in `docs/PROJECT_STATUS.md`.
+| Phase | Status | Scope |
+|---|---|---|
+| Phase 1 | ✅ Complete | UI/UX design and interaction flows |
+| Phase 2 | ✅ Complete | System architecture |
+| Phase 3 | ✅ Complete | FastAPI backend, FAISS, Neo4j, tests |
+| Phase 4.1 | ✅ Complete | React + Vite + Tailwind desktop SPA foundation |
+| Phase 4.2 | ✅ Complete | Explore |
+| Phase 4.3 | ✅ Complete | Smart Search |
+| Phase 4.4 | ✅ Complete | Section Detail + Smart Insights |
+| Phase 4.5 | ✅ Complete | Chapters |
+| Phase 4.6A | ✅ Complete | Corpus Overview |
+| Phase 4.6B | ✅ Complete | Semantic relationship generation, evaluation, and quality policy |
+| Phase 4.7 | ✅ Complete | Bookmarks + About |
+
+Detailed project status, architecture, experiments, and development decisions are maintained under `docs/`.
 
 ---
 
-## Product Direction
+# Product Overview
 
-The primary LegalVerse workflow is:
+The main LegalVerse research journey is:
 
 ```text
-Discover
-   -> Smart Search
-   -> Evaluate Relevant Sections
-   -> Read Original BNS Text
-   -> Explore Concepts / Related Sections
+Explore
+   ↓
+Smart Search
+   ↓
+Relevant BNS Sections
+   ↓
+Why This Matched
+   ↓
+Section Detail
+   ↓
+Smart Insights
+   ↓
+Related Provisions
 ```
 
-ML is embedded as an intelligence layer rather than exposed as a separate experiment screen.
-
-Planned product capabilities include:
-
-- Smart Search using keyword and semantic retrieval
-- Direct section lookup
-- Chapter browsing
-- Related-section discovery
-- Concept-based exploration
-- Explainable "Why This Matched" insights
-- Neo4j-powered legal knowledge relationships
-- Bookmarking
-- Graceful fallback when ML services are unavailable
-
----
-
-## Architecture Overview
+Users can also browse structurally:
 
 ```text
-React Native + Expo
-        |
-        v
-     FastAPI
-        |
-  Application Services
-        |
-  +-----+--------------------+
-  |                          |
-  v                          v
-Legal/Data Services    Intelligence Services
-  |                          |
-  +-------------+------------+
-                |
-      +---------+---------+
-      |                   |
-      v                   v
-    Neo4j               FAISS
-Knowledge Graph      Vector Retrieval
-      |                   |
-      +---------+---------+
-                |
-                v
-        BNS Source Data
+Chapters
+   ↓
+Chapter
+   ↓
+Sections
+   ↓
+Section Detail
 ```
 
-### Technology Direction
+or revisit saved provisions:
 
-**Frontend**
+```text
+Bookmarks
+   ↓
+Saved Section
+   ↓
+Section Detail
+```
 
-- React Native
-- Expo
-- TypeScript
-- NativeWind
+The guiding principle is:
 
-**Backend**
+> **Source law first, machine intelligence second.**
 
-- FastAPI
-- Pydantic
-- pandas
-- scikit-learn
-
-**Intelligence Layer**
-
-- FAISS for semantic/vector retrieval
-- Sentence Transformers for section/query embeddings
-- Neo4j for graph relationships and traversal
-- TF-IDF keyword retrieval as the initial lexical search baseline and fallback
+Original BNS statutory text always remains visually and functionally separate from ML-derived information.
 
 ---
 
-## Repository Structure
+# Product Capabilities
+
+## Explore
+
+The Explore page provides the primary entry point into LegalVerse.
+
+Capabilities include:
+
+- desktop legal-research landing experience;
+- Smart Search input;
+- example queries;
+- navigation to Chapters;
+- navigation to Insights;
+- live backend capability information.
+
+Example query:
+
+```text
+entrusted property
+```
+
+or:
+
+```text
+criminal breach of trust
+```
+
+---
+
+# Smart Search
+
+Smart Search supports three retrieval strategies:
+
+```text
+Recommended
+Keyword
+Semantic
+```
+
+## Recommended
+
+Uses the application's hybrid retrieval strategy.
+
+Conceptually:
+
+```text
+User Query
+   |
+   ├── Keyword Retrieval
+   |
+   └── Semantic Retrieval
+             |
+             v
+       Candidate Fusion
+             |
+             v
+        Final Ranking
+```
+
+## Keyword
+
+Uses lexical matching against BNS section information.
+
+## Semantic
+
+Uses FAISS-backed vector retrieval.
+
+Smart Search displays:
+
+- section number;
+- section title;
+- chapter;
+- statutory excerpt;
+- relevance label;
+- matched terms;
+- search method;
+- error/fallback state.
+
+---
+
+# Why This Matched
+
+Search results include an explainability action:
+
+```text
+Why This Matched
+```
+
+The explanation panel can show:
+
+- search method;
+- matched terms;
+- related concepts where available;
+- research-use disclaimer.
+
+Example:
+
+```text
+Search method
+Hybrid
+
+Matched terms
+dishonestly
+property
+```
+
+Raw similarity scores are not presented as legal probability or legal certainty.
+
+---
+
+# Section Detail
+
+Section Detail is the core LegalVerse research screen.
+
+It displays three primary information areas:
+
+```text
+┌─────────────────┬──────────────────────────┬────────────────────┐
+│ Section Context │ Statutory Source         │ Smart Insights     │
+│                 │                          │                    │
+│ Chapter         │ Section Number           │ Key Concepts       │
+│ Chapter Name    │ Section Name             │                    │
+│ Subtype         │                          │ Related Sections   │
+│                 │ Full Provision           │                    │
+│                 │                          │ Cross References   │
+└─────────────────┴──────────────────────────┴────────────────────┘
+```
+
+## Statutory Source
+
+The central reading pane contains:
+
+- section number;
+- section title;
+- chapter;
+- chapter subtype;
+- complete original BNS description.
+
+The statutory provision uses document-style serif typography to visually distinguish source law from the general application interface.
+
+The original statutory text is not rewritten by ML.
+
+---
+
+# Smart Insights
+
+Smart Insights are contextual intelligence attached to a specific section.
+
+Potential information includes:
+
+## Key Concepts
+
+```text
+HAS_CONCEPT
+```
+
+Concept nodes are displayed only when their generation pipeline is validated and the graph contains corresponding data.
+
+## Related Provisions
+
+Related sections are generated from evaluated FAISS similarity relationships stored in Neo4j.
+
+Example:
+
+```text
+Section A
+   |
+   └── SEMANTICALLY_RELATED
+            |
+            v
+         Section B
+```
+
+Related provisions are clickable and reuse the same Section Detail screen.
+
+## Cross References
+
+Cross-references use:
+
+```text
+REFERENCES
+```
+
+relationships when explicit reference extraction data is available.
+
+Cross-references are treated as deterministic/source-derived information rather than ML recommendations.
+
+---
+
+# Chapters
+
+The Chapters module provides structural BNS browsing.
+
+Capabilities include:
+
+- real chapter list from the backend;
+- chapter search;
+- section count per chapter;
+- selected chapter highlighting;
+- sections filtered by selected chapter;
+- navigation into Section Detail.
+
+The core flow is:
+
+```text
+GET /api/chapters
+        ↓
+Select Chapter
+        ↓
+GET /api/sections?chapter_number=...
+        ↓
+Select Section
+        ↓
+Section Detail
+```
+
+---
+
+# Insights
+
+The Insights module currently exposes source-backed corpus intelligence.
+
+## Corpus Overview
+
+The screen displays:
+
+- total sections;
+- total chapters;
+- chapter coverage;
+- section distribution by chapter;
+- keyword-search availability;
+- semantic-search availability;
+- graph-intelligence availability.
+
+All values come from live backend APIs rather than being hardcoded.
+
+The relevant endpoints are:
+
+```text
+GET /api/sections
+GET /api/chapters
+GET /api/health
+```
+
+---
+
+# Semantic Relationships
+
+Semantic section relationships are generated from the existing FAISS embeddings and written into Neo4j.
+
+Graph representation:
+
+```text
+(Section)
+   |
+   | SEMANTICALLY_RELATED
+   |
+   v
+(Section)
+```
+
+Relationship properties include:
+
+```text
+score
+rank
+source = "faiss"
+updated_at
+```
+
+---
+
+# Relationship Generation
+
+The initial candidate generator reads:
+
+```text
+backend/artifacts/faiss_indexes/bns_sections.index
+
+backend/artifacts/faiss_indexes/bns_sections.json
+```
+
+The current FAISS index contains:
+
+```text
+Index type: IndexFlatIP
+Vectors:    358
+Dimension:  384
+```
+
+The initial relationship-generation run produced:
+
+```text
+Candidate relationships:          1686
+Sections with candidates:          354
+Rows skipped due to missing nodes:   0
+```
+
+This initial generation used:
+
+```text
+top_k = 5
+minimum candidate score = 0.55
+```
+
+The candidate threshold is not the production/display policy.
+
+---
+
+# Relationship Quality Evaluation
+
+Semantic relationships were evaluated before being promoted to the LegalVerse Smart Insights experience.
+
+A stratified review set of **60 section relationships** was created.
+
+Relationships were labelled as:
+
+```text
+relevant
+partially_relevant
+not_relevant
+```
+
+The completed review distribution was:
+
+```text
+Relevant:             23
+Partially relevant:   28
+Not relevant:          9
+Total:                60
+```
+
+The review considered research usefulness between the two statutory provisions rather than similarity score alone.
+
+Examples of review reasons included:
+
+```text
+same_offence_family
+same_legal_concept
+shared_actor_or_object
+cross_chapter_but_useful
+generic_statutory_language
+lexical_overlap_only
+unrelated
+```
+
+---
+
+# Approved Demo Relationship Policy
+
+The reviewed data showed a clear drop in quality among lower-ranked and threshold-near relationships.
+
+A conservative demo policy was therefore selected:
+
+```text
+Minimum similarity score: 0.70
+Maximum neighbour rank:   3
+Policy status:             approved_for_demo
+```
+
+Within the reviewed relationships matching that policy:
+
+```text
+Reviewed pairs:       27
+
+Relevant:             18
+Partially relevant:    9
+Not relevant:          0
+
+Strict precision:     0.6667
+Useful precision:     1.0000
+Weighted quality:     0.8333
+```
+
+These figures apply to the reviewed subset.
+
+Because the original review set was stratified by similarity-score bands, the metrics must not be treated as an unbiased estimate across every generated semantic relationship.
+
+The policy is intentionally marked:
+
+```text
+approved_for_demo
+```
+
+rather than production-approved.
+
+---
+
+# Bookmarks
+
+LegalVerse includes lightweight bookmarking for the desktop demo.
+
+Bookmarks are stored in browser:
+
+```text
+localStorage
+```
+
+No backend user database is required.
+
+Capabilities include:
+
+- bookmark a section from Section Detail;
+- toggle Bookmark → Saved;
+- remove bookmark;
+- persist bookmarks across browser refresh;
+- search saved sections;
+- open bookmark in Section Detail;
+- remove saved section from Bookmarks.
+
+This keeps the demo architecture simple and avoids unnecessary identity/account infrastructure.
+
+---
+
+# About
+
+The About module explains:
+
+- LegalVerse purpose;
+- source-first architecture;
+- hybrid retrieval;
+- FAISS;
+- Neo4j;
+- distinction between source information and ML-derived insights;
+- research-only usage boundary.
+
+---
+
+# Architecture
+
+```text
+Desktop Browser
+      |
+      v
+React + Vite + Tailwind SPA
+      |
+      | /api/*
+      v
+FastAPI
+      |
+      +-------------------+-------------------+
+      |                   |                   |
+      v                   v                   v
+BNS CSV / Repository     FAISS              Neo4j
+Source + Metadata        Vector Search       Knowledge Graph
+      |                   |                   |
+      +-------------------+-------------------+
+                          |
+                          v
+                   Legal Intelligence
+                          |
+              +-----------+-----------+
+              |                       |
+              v                       v
+         Smart Search            Smart Insights
+```
+
+The architecture uses a modular-monolith backend.
+
+FAISS and Neo4j remain separate intelligence components behind FastAPI service abstractions.
+
+---
+
+# Technology Stack
+
+## Frontend
+
+```text
+React
+TypeScript
+Vite
+Tailwind CSS
+Lucide React
+Browser localStorage
+```
+
+LegalVerse is a **desktop-only single-page web application**.
+
+It does not use:
+
+```text
+Expo
+React Native
+Android
+iOS
+Metro
+NativeWind
+```
+
+---
+
+## Backend
+
+```text
+Python
+FastAPI
+Pydantic
+pandas
+scikit-learn
+Sentence Transformers
+FAISS
+Neo4j Python Driver
+pytest
+```
+
+---
+
+## Intelligence
+
+```text
+Keyword Retrieval
+        +
+Sentence Embeddings
+        +
+FAISS
+        +
+Neo4j
+        ↓
+LegalVerse Smart Intelligence
+```
+
+---
+
+# Repository Structure
 
 ```text
 LegalVerse/
 |
 |-- frontend/
+|
 |-- backend/
+|   |-- .env
+|   |-- __init__.py
+|   |-- main.py
+|   |-- README.md
+|   |-- requirements.txt
+|   |-- pytest.ini
+|   |
+|   |-- scripts_build_indexes.py
+|   |-- scripts_load_neo4j.py
+|   |-- scripts_build_relationships.py
+|   |-- scripts_evaluate_relationships.py
+|   |-- scripts_select_relationship_policy.py
+|   |-- scripts_apply_relationship_policy.py
+|   |
+|   |-- api/
+|   |   |-- __init__.py
+|   |   `-- routes.py
+|   |
+|   |-- core/
+|   |   |-- __init__.py
+|   |   |-- config.py
+|   |   `-- container.py
+|   |
+|   |-- intelligence/
+|   |   |-- __init__.py
+|   |   |-- faiss_store.py
+|   |   `-- neo4j_store.py
+|   |
+|   |-- models/
+|   |   `-- __init__.py
+|   |
+|   |-- repositories/
+|   |   |-- __init__.py
+|   |   `-- csv_repository.py
+|   |
+|   |-- schemas/
+|   |   |-- __init__.py
+|   |   |-- common.py
+|   |   |-- insight.py
+|   |   |-- search.py
+|   |   `-- section.py
+|   |
+|   |-- services/
+|   |   |-- __init__.py
+|   |   |-- insight_service.py
+|   |   `-- search_service.py
+|   |
+|   |-- artifacts/
+|   |   |-- faiss_indexes/
+|   |   |   |-- bns_sections.index
+|   |   |   `-- bns_sections.json
+|   |   |
+|   |   `-- relationship_policy.json
+|   |
+|   `-- tests/
+|       |-- __init__.py
+|       |-- conftest.py
+|       |
+|       |-- fixtures/
+|       |   |-- bns_sections.json
+|       |   `-- json_repository.py
+|       |
+|       |-- integration/
+|       |
+|       |-- unit/
+|       |
+|       `-- validation/
 |
 |-- data/
 |   |-- bns_processed.csv
-|   |-- bns_sections.csv
+|   `-- bns_sections.csv
 |
 |-- artifacts/
+|
 |-- notebooks/
 |
 |-- evaluation/
 |   |-- eda_&_fe.ipynb
 |   |-- model_experiments.ipynb
+|   |
+|   `-- relationships/
+|       |-- relationship_review.csv
+|       |-- relationship_review_labelled.csv
+|       |-- relationship_quality_report.json
+|       |-- relationship_policy_analysis.json
+|       `-- selected_policy_evidence.json
 |
 |-- docs/
 |   |-- PROJECT_STATUS.md
 |   |-- UI_ROADMAP.md
 |   |-- ARCHITECTURE.md
 |   |-- DEVELOPMENT_ROADMAP.md
-|   |-- ML_EXPERIMENTS.md
+|   `-- ML_EXPERIMENTS.md
 |
-|-- README.md
+`-- README.md
 ```
 
-`bns_sections.csv` remains the raw statutory source. Derived datasets, embeddings, FAISS indexes, graph imports, and other generated intelligence artifacts must remain separate from the raw source.
+The backend uses the flattened package structure.
 
----
-
-# Backend
-
-The Phase 3 backend baseline follows a layered FastAPI architecture.
+There is no longer a:
 
 ```text
-API Routes
-    |
-Pydantic Schemas
-    |
-Application Services
-    |
-Repositories / Intelligence Adapters
-    |
-CSV + FAISS + Neo4j + Artifacts
+backend/app/
 ```
 
-The backend is designed so that React Native does not need to know which embedding model, FAISS implementation, graph query, or ranking algorithm produces an insight.
-
-## Current Backend Capabilities
-
-The implemented backend baseline includes:
-
-- BNS CSV repository
-- Section retrieval
-- Chapter listing
-- Exact section lookup
-- TF-IDF keyword search
-- FAISS semantic-search adapter
-- Hybrid retrieval path
-- Neo4j graph adapter
-- Section Smart Insights endpoint
-- Health/dependency availability endpoint
-- Partial-ML fallback handling
-- Environment-based configuration
-- Unit tests
-- Validation tests
-- API integration tests
-- FAISS index-building utility
-- Base Neo4j graph-loading utility
-
-The isolated backend test suite currently passes **11 tests** against representative fixture data.
-
-The real project `bns_sections.csv`, generated FAISS artifacts, and live Neo4j instance still require integration testing before the backend is considered production-ready.
+hierarchy.
 
 ---
 
-## Backend Structure
+# Data
+
+The primary datasets are:
 
 ```text
-backend/
-|-- app/
-|   |-- api/
-|   |   |-- v1/
-|   |
-|   |-- core/
-|   |-- intelligence/
-|   |-- models/
-|   |-- repositories/
-|   |-- schemas/
-|   |-- services/
-|   |-- main.py
-|
-|-- tests/
-|   |-- unit/
-|   |-- validation/
-|   |-- integration/
-|   |-- fixtures/
-|
-|-- requirements.txt
-|-- pytest.ini
-|-- .env.example
-|-- scripts_build_indexes.py
-|-- scripts_load_neo4j.py
+data/bns_sections.csv
+data/bns_processed.csv
 ```
+
+`bns_sections.csv` remains the source statutory dataset.
+
+Derived information such as:
+
+- embeddings;
+- FAISS indexes;
+- graph relationships;
+- ML artifacts;
+- evaluation outputs;
+
+must remain separate from the original source data.
 
 ---
 
-## API Baseline
+# Backend Setup
 
-```text
-GET  /api/v1/health
-GET  /api/v1/sections
-GET  /api/v1/sections/{section_number}
-GET  /api/v1/chapters
-POST /api/v1/search
-GET  /api/v1/insights/sections/{section_number}
-```
+## 1. Create/activate Python environment
 
-Additional API contracts will be introduced only when required by approved frontend modules and intelligence capabilities.
-
----
-
-## Backend Setup
-
-From the `backend/` directory:
+Example:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the environment and install dependencies:
+Activate the environment according to the operating system.
+
+Then install dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
-
-Create local runtime configuration from the provided example:
-
-```bash
-cp .env.example .env
-```
-
-Important configuration areas include:
-
-- BNS data paths
-- artifact paths
-- FAISS index paths
-- embedding model selection
-- Neo4j connection settings
-- search defaults
-- intelligence feature switches
-
-Secrets such as the Neo4j password must not be committed to source control.
 
 ---
 
-## Run the API
+# Neo4j Configuration
 
-From `backend/`:
+Configure:
 
-```bash
-uvicorn app.main:app --reload
+```text
+backend/.env
 ```
 
-FastAPI exposes its generated API documentation through the standard application documentation routes when running locally.
+Example:
+
+```env
+NEO4J_URI=bolt://localhost:7687
+
+NEO4J_USERNAME=neo4j
+
+NEO4J_PASSWORD=<your-password>
+
+NEO4J_DATABASE=neo4j
+
+ENABLE_NEO4J=true
+```
+
+Never commit actual credentials to source control.
 
 ---
 
-## Run Backend Tests
+# Run Backend
+
+Use the current LegalVerse command from the project root:
 
 ```bash
-pytest
+uvicorn backend:main:app \
+  --reload \
+  --host 127.0.0.1 \
+  --port 8000
 ```
 
-Tests are organized into three required groups:
+Verify:
 
-- `tests/unit/`
-- `tests/validation/`
-- `tests/integration/`
+```bash
+curl http://127.0.0.1:8000/api/health
+```
 
-Code tests and ML-quality evaluation are intentionally kept separate. Passing API/unit tests does not by itself approve an ML insight for frontend use.
+FastAPI documentation is available while the application is running through the standard FastAPI documentation route.
+
+---
+
+# API
+
+The application no longer uses the old:
+
+```text
+/api/v1
+```
+
+contract.
+
+The current API prefix is:
+
+```text
+/api
+```
+
+## Current API endpoints
+
+```text
+GET  /api/health
+
+GET  /api/sections
+
+GET  /api/sections/{section_number}
+
+GET  /api/sections?chapter_number={chapter_number}
+
+GET  /api/chapters
+
+POST /api/search
+
+GET  /api/insights/sections/{section_number}
+```
+
+---
+
+# API Examples
+
+## Health
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/health
+```
+
+---
+
+## Section
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/sections/316
+```
+
+---
+
+## All Sections
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/sections
+```
+
+---
+
+## Chapters
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/chapters
+```
+
+---
+
+## Sections for Chapter
+
+```bash
+curl \
+  "http://127.0.0.1:8000/api/sections?chapter_number=17"
+```
+
+---
+
+## Smart Search
+
+```bash
+curl \
+  -X POST \
+  http://127.0.0.1:8000/api/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "entrusted property",
+    "mode": "recommended",
+    "top_k": 5,
+    "chapter_number": null
+  }'
+```
+
+---
+
+## Section Smart Insights
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/insights/sections/316
+```
 
 ---
 
 # FAISS
 
-FAISS is responsible for vector-based retrieval and semantic similarity.
+The current FAISS artifacts are stored under:
 
-Primary planned uses:
-
-- semantic query retrieval
-- related-section discovery
-- nearest-section search
-- semantic candidate generation for hybrid search
-
-## Build the FAISS Index
-
-From `backend/`:
-
-```bash
-python scripts_build_indexes.py \
-  --data ../data/bns_sections.csv \
-  --output-dir ../artifacts/faiss_indexes
+```text
+backend/artifacts/faiss_indexes/
+├── bns_sections.index
+└── bns_sections.json
 ```
 
-Expected generated artifacts are kept under `artifacts/`, not under `data/raw` or the original CSV location.
+The current index is based on normalized sentence embeddings and uses:
 
-The production embedding model and retrieval configuration remain subject to ML evaluation recorded in `docs/ML_EXPERIMENTS.md`.
+```text
+IndexFlatIP
+```
+
+for similarity retrieval.
+
+Observed index properties:
+
+```text
+Vectors:   358
+Dimension: 384
+```
 
 ---
 
-# Neo4j
+# Build FAISS Index
 
-Neo4j provides the graph intelligence layer.
+From the appropriate project environment:
 
-The initial graph supports the relationship direction:
+```bash
+python -m backend.scripts_build_indexes
+```
+
+or use the supported arguments defined by:
+
+```text
+backend/scripts_build_indexes.py
+```
+
+Generated artifacts belong under:
+
+```text
+backend/artifacts/faiss_indexes/
+```
+
+---
+
+# Neo4j Graph
+
+The initial Neo4j graph contains:
 
 ```text
 (Section)-[:BELONGS_TO]->(Chapter)
 ```
 
-The approved architecture also allows validated relationships such as:
+The validated semantic intelligence adds:
+
+```text
+(Section)-[:SEMANTICALLY_RELATED]->(Section)
+```
+
+Future graph relationships are reserved for:
 
 ```text
 (Section)-[:REFERENCES]->(Section)
+
 (Section)-[:HAS_CONCEPT]->(Concept)
-(Section)-[:SEMANTICALLY_RELATED]->(Section)
+
 (Concept)-[:RELATED_TO]->(Concept)
 ```
 
-These additional relationships should only be populated after their extraction/generation logic is evaluated.
-
-## Load the Base Neo4j Graph
-
-From `backend/`:
-
-```bash
-python scripts_load_neo4j.py \
-  --data ../data/bns_sections.csv \
-  --password '<your-neo4j-password>'
-```
-
-Neo4j connection settings are maintained through environment configuration.
+These relationships should not be populated until their respective extraction/generation pipelines are validated.
 
 ---
 
-# Search Strategy
+# Build Candidate Semantic Relationships
 
-LegalVerse exposes product-oriented search modes:
+Dry-run:
 
-```text
-Recommended -> Hybrid retrieval
-Keyword     -> Lexical retrieval
-Semantic    -> FAISS vector retrieval
+```bash
+python -m backend.scripts_build_relationships \
+  --top-k 5 \
+  --min-score 0.55 \
+  --dry-run
 ```
 
-At a high level:
+Initial candidate generation produced:
 
 ```text
-User Query
-   |-- Keyword Retrieval
-   |-- FAISS Semantic Retrieval
-              |
-              v
-       Candidate Fusion
-              |
-              v
-       Ranking / Thresholds
-              |
-              v
-       Neo4j Enrichment
-              |
-              v
-       Smart Insights
+FAISS vectors: 358
+
+Metadata rows: 358
+
+Candidate relationships: 1686
+
+Sections with at least one candidate: 354
 ```
 
-The specific production ranking strategy and thresholds must be validated through retrieval experiments rather than assumed from initial implementation values.
+The initial candidate threshold exists for evaluation and should not automatically be treated as the display policy.
+
+---
+
+# Relationship Review
+
+Generate a stratified relationship review worksheet:
+
+```bash
+python -m backend.scripts_evaluate_relationships export \
+  --per-band 20 \
+  --threshold 0.55 \
+  --middle-score 0.65 \
+  --high-score 0.80 \
+  --seed 42
+```
+
+Review labels:
+
+```text
+relevant
+
+partially_relevant
+
+not_relevant
+```
+
+Generate metrics:
+
+```bash
+python -m backend.scripts_evaluate_relationships score \
+  --input evaluation/relationships/relationship_review_labelled.csv
+```
+
+Evaluate threshold/rank policies:
+
+```bash
+python -m backend.scripts_select_relationship_policy \
+  --input evaluation/relationships/relationship_review_labelled.csv
+```
+
+---
+
+# Apply Relationship Quality Policy
+
+The approved demo relationship policy is stored at:
+
+```text
+backend/artifacts/relationship_policy.json
+```
+
+Dry-run:
+
+```bash
+python -m backend.scripts_apply_relationship_policy \
+  --dry-run
+```
+
+Apply the policy:
+
+```bash
+python -m backend.scripts_apply_relationship_policy
+```
+
+The script rebuilds only:
+
+```text
+SEMANTICALLY_RELATED
+```
+
+relationships.
+
+It does not delete:
+
+```text
+Section
+
+Chapter
+
+BELONGS_TO
+
+future REFERENCES relationships
+
+future HAS_CONCEPT relationships
+```
+
+---
+
+# Verify Semantic Relationships
+
+In Neo4j:
+
+```cypher
+MATCH
+  (source:Section)
+  -[relationship:SEMANTICALLY_RELATED]->
+  (target:Section)
+
+RETURN
+  count(relationship) AS relationship_count,
+  min(relationship.score) AS minimum_score,
+  max(relationship.rank) AS maximum_rank;
+```
+
+For the current approved demo policy:
+
+```text
+minimum_score >= 0.70
+
+maximum_rank <= 3
+```
+
+Check for self-links:
+
+```cypher
+MATCH
+  (section:Section)
+  -[relationship:SEMANTICALLY_RELATED]->
+  (section)
+
+RETURN
+  count(relationship) AS self_links;
+```
+
+Expected:
+
+```text
+0
+```
+
+---
+
+# Backend Testing
+
+Backend tests are organized by intent:
+
+```text
+backend/tests/
+├── fixtures/
+├── unit/
+├── validation/
+└── integration/
+```
+
+The test fixture uses:
+
+```text
+backend/tests/fixtures/bns_sections.json
+```
+
+rather than the full production CSV.
+
+This keeps unit and integration tests:
+
+- lightweight;
+- deterministic;
+- easier to maintain.
+
+Run:
+
+```bash
+pytest backend/tests
+```
+
+Specific relationship tests can also be run independently.
+
+Example:
+
+```bash
+pytest backend/tests/unit/test_build_relationships.py
+```
+
+```bash
+pytest backend/tests/unit/test_evaluate_relationships.py
+```
+
+```bash
+pytest backend/tests/unit/test_relationship_policy.py
+```
+
+Software correctness and ML-quality evaluation are deliberately treated as different concerns.
+
+---
+
+# Frontend
+
+LegalVerse uses a simple desktop SPA architecture.
+
+## Technology
+
+```text
+React
+TypeScript
+Vite
+Tailwind CSS
+Lucide React
+```
+
+The application does not require:
+
+```text
+Expo
+React Native
+Android
+iOS
+Metro
+NativeWind
+```
+
+---
+
+# Frontend Structure
+
+A representative frontend structure is:
+
+```text
+frontend/
+├── index.html
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+│
+└── src/
+    ├── App.tsx
+    ├── main.tsx
+    ├── index.css
+    ├── vite-env.d.ts
+    │
+    ├── components/
+    │   ├── Header.tsx
+    │   └── Sidebar.tsx
+    │
+    ├── features/
+    │   ├── Explore.tsx
+    │   ├── SmartSearch.tsx
+    │   │
+    │   ├── section/
+    │   │   ├── SectionDetail.tsx
+    │   │   └── useSectionDetail.ts
+    │   │
+    │   ├── chapters/
+    │   │   ├── Chapters.tsx
+    │   │   └── useChapters.ts
+    │   │
+    │   ├── insights/
+    │   │   └── CorpusOverview.tsx
+    │   │
+    │   ├── bookmarks/
+    │   │   └── Bookmarks.tsx
+    │   │
+    │   └── about/
+    │       └── About.tsx
+    │
+    ├── hooks/
+    │   └── useBookmarks.ts
+    │
+    ├── services/
+    │   └── api.ts
+    │
+    └── types/
+        ├── app.ts
+        ├── bookmark.ts
+        ├── chapter.ts
+        ├── insight.ts
+        ├── search.ts
+        └── section.ts
+```
+
+---
+
+# Install Frontend
+
+From:
+
+```text
+frontend/
+```
+
+run:
+
+```bash
+npm install
+```
+
+Validate TypeScript:
+
+```bash
+npm run typecheck
+```
+
+Build:
+
+```bash
+npm run build
+```
+
+---
+
+# Run Frontend
+
+With the FastAPI backend already running:
+
+```bash
+cd frontend
+
+npm run dev
+```
+
+Vite normally serves the application at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Vite Backend Proxy
+
+The development server proxies:
+
+```text
+/api/*
+```
+
+to:
+
+```text
+http://127.0.0.1:8000
+```
+
+Conceptually:
+
+```text
+Browser
+   |
+   v
+localhost:5173
+   |
+   | /api/*
+   v
+Vite Proxy
+   |
+   v
+127.0.0.1:8000
+   |
+   v
+FastAPI
+```
+
+Therefore frontend API code uses relative URLs:
+
+```text
+/api/health
+
+/api/search
+
+/api/sections/316
+```
+
+instead of hardcoding the backend host throughout React components.
+
+---
+
+# Recommended Local Startup
+
+Use two terminals.
+
+## Terminal 1: Backend
+
+From the project root:
+
+```bash
+source .venv/bin/activate
+```
+
+Start FastAPI:
+
+```bash
+uvicorn backend:main:app \
+  --reload \
+  --host 127.0.0.1 \
+  --port 8000
+```
+
+Verify:
+
+```bash
+curl \
+  http://127.0.0.1:8000/api/health
+```
+
+---
+
+## Terminal 2: Frontend
+
+```bash
+cd frontend
+
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+Verify the proxy:
+
+```bash
+curl \
+  http://localhost:5173/api/health
+```
+
+Both direct backend and proxy calls should return the LegalVerse health response.
+
+---
+
+# Frontend Validation
+
+Before considering a change stable:
+
+```bash
+npm run typecheck
+```
+
+and:
+
+```bash
+npm run build
+```
+
+should both pass.
 
 ---
 # User Interface 
@@ -404,42 +1490,450 @@ The specific production ranking strategy and thresholds must be validated throug
 
 ---
 
-# Graceful Intelligence Fallback
 
-LegalVerse treats statutory access and ML intelligence as separate availability layers.
 
-If FAISS or Neo4j is unavailable:
+# End-to-End Demo Flow
 
-- statutory sections should remain accessible;
-- chapter browsing should remain accessible;
-- exact lookup should remain accessible;
-- keyword retrieval should remain available where the source dataset is loaded;
-- unavailable Smart Insights should be clearly identified rather than fabricated.
+A useful demo sequence is:
 
----
+## 1. Explore
 
-# Project Documentation
+Start from:
 
-Detailed documentation lives under `docs/`:
+```text
+Explore
+```
 
-- `docs/PROJECT_STATUS.md` - current project state, progress, blockers, and next work
-- `docs/UI_ROADMAP.md` - frozen UI/UX direction and flows
-- `docs/ARCHITECTURE.md` - approved system architecture
-- `docs/DEVELOPMENT_ROADMAP.md` - implementation sequence and milestones
-- `docs/ML_EXPERIMENTS.md` - ML experiments, evaluation, results, and promotion decisions
+Enter:
 
-The root `README.md` remains the high-level project entry point and is updated after major project milestones.
+```text
+entrusted property
+```
 
 ---
 
-## Current Development Boundary
+## 2. Smart Search
 
-Phase 3 currently has a tested backend baseline. Before frontend module development begins, the next backend validation step is to run the implementation against:
+Show:
 
-1. the actual `data/bns_sections.csv`;
-2. generated FAISS artifacts;
-3. a live Neo4j instance;
-4. real API integration scenarios;
-5. retrieval/insight quality evaluation separate from code correctness.
+- Recommended search;
+- ranked sections;
+- relevance labels;
+- matched terms.
 
-Only validated ML-derived capabilities should be promoted to the React Native Smart Insights experience.
+Open:
+
+```text
+Why This Matched
+```
+
+to demonstrate explainability.
+
+---
+
+## 3. Section Detail
+
+Open one result.
+
+Show:
+
+- complete source provision;
+- legal typography;
+- chapter context;
+- Smart Insights;
+- Related Provisions.
+
+---
+
+## 4. Semantic Relationship
+
+Open a related section.
+
+This demonstrates:
+
+```text
+FAISS
+   ↓
+evaluated similarity
+   ↓
+Neo4j relationship
+   ↓
+FastAPI
+   ↓
+Smart Insights
+```
+
+---
+
+## 5. Chapters
+
+Open:
+
+```text
+Chapters
+```
+
+Select a chapter.
+
+Open a section and show that the same Section Detail experience is reused.
+
+---
+
+## 6. Insights
+
+Open:
+
+```text
+Insights
+```
+
+Show:
+
+- corpus section count;
+- chapter count;
+- section distribution;
+- search capability availability;
+- graph capability availability.
+
+---
+
+## 7. Bookmarks
+
+Bookmark a section.
+
+Open:
+
+```text
+Bookmarks
+```
+
+Show saved section.
+
+Refresh the browser to demonstrate `localStorage` persistence.
+
+---
+
+## 8. About
+
+Finish with:
+
+```text
+About
+```
+
+to explain:
+
+- source-first principle;
+- FAISS;
+- Neo4j;
+- ML/source distinction;
+- research-use boundary.
+
+---
+
+# Graceful Degradation
+
+LegalVerse separates source availability from intelligence availability.
+
+## If FAISS is unavailable
+
+Expected behavior:
+
+```text
+Source browsing       available
+
+Chapter browsing      available
+
+Keyword search        available
+
+Semantic search       degraded/unavailable
+```
+
+## If Neo4j is unavailable
+
+Expected behavior:
+
+```text
+Section source        available
+
+Smart Insights        unavailable/degraded
+```
+
+The UI should never fabricate missing intelligence.
+
+---
+
+# Design Principles
+
+## 1. Source First
+
+Original statutory content has the highest authority.
+
+---
+
+## 2. Insight First, Algorithm Second
+
+The UI communicates:
+
+```text
+Strong match
+
+Related provision
+
+Why this matched
+```
+
+rather than forcing users to interpret raw ML terminology.
+
+---
+
+## 3. No Artificial Certainty
+
+Embedding similarity is not:
+
+```text
+probability that a law applies
+```
+
+and should never be presented that way.
+
+---
+
+## 4. Graceful ML Failure
+
+LegalVerse must remain useful even when intelligence services are unavailable.
+
+---
+
+## 5. Evaluate Before Promotion
+
+ML-generated information should not automatically become product intelligence.
+
+The semantic-relationship flow demonstrates this explicitly:
+
+```text
+FAISS candidate
+      ↓
+human review
+      ↓
+quality analysis
+      ↓
+approved policy
+      ↓
+Neo4j relationship
+      ↓
+frontend Smart Insight
+```
+
+---
+
+## 6. Keep the Demo Architecture Simple
+
+The current application intentionally avoids unnecessary infrastructure such as:
+
+- mobile native applications;
+- authentication;
+- user accounts;
+- remote bookmark persistence;
+- microservices.
+
+The architecture should remain proportional to the desktop demonstration goal.
+
+---
+
+# Documentation
+
+Detailed documentation lives under:
+
+```text
+docs/
+├── PROJECT_STATUS.md
+├── UI_ROADMAP.md
+├── ARCHITECTURE.md
+├── DEVELOPMENT_ROADMAP.md
+└── ML_EXPERIMENTS.md
+```
+
+## `PROJECT_STATUS.md`
+
+Tracks:
+
+- current phase;
+- completed work;
+- pending work;
+- blockers;
+- important decisions.
+
+## `UI_ROADMAP.md`
+
+Tracks:
+
+- design system;
+- screen definitions;
+- navigation;
+- user flows;
+- Smart Insight presentation;
+- frontend operational states.
+
+## `ARCHITECTURE.md`
+
+Tracks:
+
+- application architecture;
+- backend layers;
+- FAISS responsibility;
+- Neo4j responsibility;
+- frontend/backend contract;
+- test boundaries.
+
+## `DEVELOPMENT_ROADMAP.md`
+
+Tracks:
+
+```text
+Phase
+  ↓
+Milestone
+  ↓
+Module
+  ↓
+Implementation
+  ↓
+Test
+  ↓
+Freeze
+```
+
+## `ML_EXPERIMENTS.md`
+
+Tracks:
+
+- experiment objective;
+- dataset/version;
+- technique;
+- parameters;
+- metrics;
+- observations;
+- limitations;
+- decision;
+- artifact/version.
+
+---
+
+# Current Completion State
+
+The main LegalVerse demo workflow is complete:
+
+```text
+Explore                 ✅
+
+Smart Search            ✅
+
+Why This Matched        ✅
+
+Section Detail          ✅
+
+Smart Insights          ✅
+
+Semantic Relationships ✅
+
+Chapters                ✅
+
+Corpus Overview         ✅
+
+Bookmarks               ✅
+
+About                   ✅
+
+Backend tests           ✅
+
+Frontend type checking  ✅
+
+Frontend build          ✅
+```
+
+---
+
+# Potential Future Enhancements
+
+The following are intentionally outside the completed core demo.
+
+## Concept Intelligence
+
+Generate and validate:
+
+```text
+(Section)-[:HAS_CONCEPT]->(Concept)
+```
+
+Then introduce Concept Explorer.
+
+---
+
+## Explicit Cross References
+
+Extract actual section references from statutory source text and create:
+
+```text
+(Section)-[:REFERENCES]->(Section)
+```
+
+---
+
+## Chapter Intelligence
+
+Aggregate validated section/concept relationships at chapter level.
+
+---
+
+## Graph Visualization
+
+Visualize:
+
+```text
+Chapter
+   ↓
+Section
+   ↓
+Concept
+   ↓
+Related Section
+```
+
+only after the underlying relationships have sufficient quality.
+
+---
+
+## Larger Quality Evaluation
+
+Expand beyond the current 60-pair semantic relationship review.
+
+Potential future evaluation should include:
+
+- additional random sampling;
+- cross-chapter samples;
+- hard-negative examples;
+- rank-specific evaluation;
+- multiple reviewers where appropriate.
+
+---
+
+## Deployment
+
+Potential deployment work includes:
+
+- production FastAPI server configuration;
+- built Vite static assets;
+- reverse proxy;
+- secret management;
+- Neo4j deployment;
+- CI/CD;
+- frontend/backend smoke tests.
+
+These are deployment/stabilization concerns rather than requirements for the current local desktop demo.
+
+---
+
+# Final Product Principle
+
+> **LegalVerse should help users discover and explore BNS provisions intelligently while always making it clear which information comes from the statute and which information is derived by algorithms.**

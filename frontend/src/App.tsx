@@ -113,7 +113,7 @@ export default function App() {
 
   /*
    * =========================================================
-   * SMART SEARCH STATE
+   * SMART SEARCH
    * =========================================================
    */
 
@@ -123,9 +123,6 @@ export default function App() {
   ] = useState('');
 
 
-  /*
-   * Section opened from Smart Search.
-   */
   const [
     selectedSection,
     setSelectedSection,
@@ -134,10 +131,8 @@ export default function App() {
 
   /*
    * =========================================================
-   * CHAPTER STATE
+   * CHAPTERS
    * =========================================================
-   *
-   * Section opened from Chapters.
    */
 
   const [
@@ -148,8 +143,11 @@ export default function App() {
 
   /*
    * =========================================================
-   * BOOKMARK STATE
+   * BOOKMARKS
    * =========================================================
+   *
+   * This is the single shared bookmark store used throughout
+   * the whole SPA.
    */
 
   const bookmarkStore =
@@ -157,9 +155,9 @@ export default function App() {
 
 
   /*
-   * Section currently opened from
-   * the Bookmarks tab.
+   * Section currently opened from Bookmarks.
    */
+
   const [
     bookmarkSection,
     setBookmarkSection,
@@ -168,7 +166,7 @@ export default function App() {
 
   /*
    * =========================================================
-   * CENTRAL SPA NAVIGATION
+   * NAVIGATION
    * =========================================================
    */
 
@@ -178,8 +176,7 @@ export default function App() {
   ) => {
 
     /*
-     * Preserve a query handed from
-     * Explore into Smart Search.
+     * Preserve Explore -> Smart Search query.
      */
     if (
       options?.query !== undefined
@@ -192,8 +189,8 @@ export default function App() {
 
 
     /*
-     * Leaving Smart Search closes any
-     * contextual section opened from Search.
+     * Clear contextual Smart Search section
+     * only when leaving Search.
      */
     if (
       nextPage !== 'search'
@@ -204,8 +201,8 @@ export default function App() {
 
 
     /*
-     * Leaving Chapters closes any
-     * contextual section opened from Chapters.
+     * Clear contextual Chapter section
+     * only when leaving Chapters.
      */
     if (
       nextPage !== 'chapters'
@@ -216,8 +213,8 @@ export default function App() {
 
 
     /*
-     * Leaving Bookmarks closes any
-     * contextual section opened from Bookmarks.
+     * Clear contextual Bookmark section
+     * only when leaving Bookmarks.
      */
     if (
       nextPage !== 'bookmarks'
@@ -247,7 +244,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.2 EXPLORE
+     * EXPLORE
      * -------------------------------------------------------
      */
 
@@ -265,7 +262,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.3 SMART SEARCH
+     * SMART SEARCH
      * -------------------------------------------------------
      */
 
@@ -274,8 +271,7 @@ export default function App() {
     ) {
 
       /*
-       * 4.4 Section Detail opened from
-       * Smart Search.
+       * Section Detail opened from Smart Search.
        */
       if (
         selectedSection
@@ -295,6 +291,9 @@ export default function App() {
               setSelectedSection
             }
 
+            /*
+             * Phase 4.7 Bookmark integration.
+             */
             bookmarked={
               bookmarkStore
                 .isBookmarked(
@@ -311,9 +310,6 @@ export default function App() {
       }
 
 
-      /*
-       * Standard Smart Search.
-       */
       return (
         <SmartSearch
           initialQuery={
@@ -330,7 +326,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.5 CHAPTERS
+     * CHAPTERS
      * -------------------------------------------------------
      */
 
@@ -359,6 +355,9 @@ export default function App() {
               setChapterSection
             }
 
+            /*
+             * Phase 4.7 Bookmark integration.
+             */
             bookmarked={
               bookmarkStore
                 .isBookmarked(
@@ -375,9 +374,6 @@ export default function App() {
       }
 
 
-      /*
-       * Standard Chapters workspace.
-       */
       return (
         <Chapters
           onOpenSection={
@@ -390,7 +386,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.6A INSIGHTS / CORPUS OVERVIEW
+     * INSIGHTS
      * -------------------------------------------------------
      */
 
@@ -406,7 +402,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.7 BOOKMARKS
+     * BOOKMARKS
      * -------------------------------------------------------
      */
 
@@ -415,8 +411,7 @@ export default function App() {
     ) {
 
       /*
-       * Existing 4.4 Section Detail reused
-       * for sections opened from Bookmarks.
+       * Section Detail opened from Bookmarks.
        */
       if (
         bookmarkSection
@@ -428,21 +423,17 @@ export default function App() {
               bookmarkSection
             }
 
-            /*
-             * Back returns to Bookmarks.
-             */
             onBack={() =>
               setBookmarkSection('')
             }
 
-            /*
-             * Related/cross-reference exploration
-             * remains inside the bookmark context.
-             */
             onOpenSection={
               setBookmarkSection
             }
 
+            /*
+             * Phase 4.7 Bookmark integration.
+             */
             bookmarked={
               bookmarkStore
                 .isBookmarked(
@@ -458,6 +449,10 @@ export default function App() {
         );
       }
 
+
+      /*
+       * Main bookmarks workspace.
+       */
 
       return (
         <Bookmarks
@@ -481,7 +476,7 @@ export default function App() {
 
     /*
      * -------------------------------------------------------
-     * 4.7 ABOUT
+     * ABOUT
      * -------------------------------------------------------
      */
 
@@ -495,18 +490,13 @@ export default function App() {
     }
 
 
-    /*
-     * This should not normally be reached because
-     * all Page values now have an implementation.
-     */
-
     return null;
   };
 
 
   /*
    * =========================================================
-   * GLOBAL LEGALVERSE SHELL
+   * APPLICATION SHELL
    * =========================================================
    */
 
@@ -522,9 +512,6 @@ export default function App() {
       "
     >
 
-      {/*
-       * Persistent navigation.
-       */}
       <Sidebar
         page={page}
 
@@ -538,9 +525,6 @@ export default function App() {
       />
 
 
-      {/*
-       * Main research workspace.
-       */}
       <main
         className="
           flex
@@ -550,9 +534,6 @@ export default function App() {
         "
       >
 
-        {/*
-         * Context-aware header.
-         */}
         <Header
           title={
             meta.title
@@ -564,9 +545,6 @@ export default function App() {
         />
 
 
-        {/*
-         * Current module.
-         */}
         <div
           className="
             min-h-0

@@ -5,6 +5,8 @@ import type {
 import {
   ArrowLeft,
   ArrowRight,
+  Bookmark,
+  BookmarkCheck,
   BookOpen,
   BrainCircuit,
   ExternalLink,
@@ -18,6 +20,14 @@ import {
 } from './useSectionDetail';
 
 
+type BookmarkPayload = {
+  section_number: string;
+  section_name: string;
+  chapter_number: string;
+  chapter_name: string;
+};
+
+
 type SectionDetailProps = {
   sectionNumber: string;
 
@@ -26,13 +36,22 @@ type SectionDetailProps = {
   onOpenSection: (
     sectionNumber: string,
   ) => void;
+
+  bookmarked?: boolean;
+
+  onToggleBookmark?: (
+    bookmark: BookmarkPayload,
+  ) => void;
 };
+
 
 
 export function SectionDetail({
   sectionNumber,
   onBack,
   onOpenSection,
+  bookmarked = false,
+  onToggleBookmark,
 }: SectionDetailProps) {
 
   const state =
@@ -328,34 +347,126 @@ export function SectionDetail({
 
           <div
             className="
-              flex
-              items-center
-              gap-2
-              text-[11px]
-              font-bold
-              uppercase
-              tracking-widest
-              text-legal-gold
-            "
+    flex
+    items-start
+    justify-between
+    gap-5
+  "
           >
-            <BookOpen size={14} />
 
-            Section {section.section_number}
+            <div className="min-w-0">
+
+              <div
+                className="
+        flex
+        items-center
+        gap-2
+        text-[11px]
+        font-bold
+        uppercase
+        tracking-widest
+        text-legal-gold
+      "
+              >
+                <BookOpen size={14} />
+
+                Section {section.section_number}
+              </div>
+
+
+              <h2
+                className="
+        mt-3
+        max-w-3xl
+        text-[28px]
+        font-bold
+        leading-[1.18]
+        text-legal-text
+      "
+              >
+                {section.section_name}
+              </h2>
+
+            </div>
+
+
+            {onToggleBookmark && (
+
+              <button
+                type="button"
+
+                onClick={() =>
+                  onToggleBookmark({
+                    section_number:
+                      section.section_number,
+
+                    section_name:
+                      section.section_name,
+
+                    chapter_number:
+                      section.chapter_number,
+
+                    chapter_name:
+                      section.chapter_name,
+                  })
+                }
+
+                className={`
+        flex
+        shrink-0
+        items-center
+        gap-2
+        rounded-lg
+        border
+        px-3
+        py-2
+        text-xs
+        font-semibold
+        transition
+
+        ${bookmarked
+                    ? `
+              border-amber-200
+              bg-amber-50
+              text-amber-800
+            `
+                    : `
+              border-slate-200
+              bg-white
+              text-legal-muted
+              hover:border-amber-200
+              hover:bg-amber-50
+              hover:text-amber-800
+            `
+                  }
+      `}
+              >
+
+                {
+                  bookmarked
+                    ? (
+                      <BookmarkCheck
+                        size={15}
+                      />
+                    )
+                    : (
+                      <Bookmark
+                        size={15}
+                      />
+                    )
+                }
+
+                {
+                  bookmarked
+                    ? 'Saved'
+                    : 'Bookmark'
+                }
+
+              </button>
+
+            )}
+
           </div>
-
-
-          <h2
-            className="
-              mt-3
-              max-w-3xl
-              text-[28px]
-              font-bold
-              leading-[1.18]
-              text-legal-text
-            "
-          >
-            {section.section_name}
-          </h2>
 
 
           <div
@@ -784,34 +895,34 @@ export function SectionDetail({
                     insights
                       .cross_references
                       .length
-                    ? (
+                      ? (
 
-                      <div
-                        className="
+                        <div
+                          className="
                           flex
                           flex-wrap
                           gap-2
                         "
-                      >
+                        >
 
-                        {
-                          insights
-                            .cross_references
-                            .map(
-                              (
-                                reference,
-                              ) => (
+                          {
+                            insights
+                              .cross_references
+                              .map(
+                                (
+                                  reference,
+                                ) => (
 
-                                <button
-                                  key={
-                                    reference
-                                  }
-                                  onClick={() =>
-                                    onOpenSection(
-                                      reference,
-                                    )
-                                  }
-                                  className="
+                                  <button
+                                    key={
+                                      reference
+                                    }
+                                    onClick={() =>
+                                      onOpenSection(
+                                        reference,
+                                      )
+                                    }
+                                    className="
                                     rounded-lg
                                     bg-white
                                     px-2.5
@@ -823,26 +934,26 @@ export function SectionDetail({
                                     ring-slate-200
                                     hover:ring-legal-gold
                                   "
-                                >
-                                  Section {
-                                    reference
-                                  }
-                                </button>
+                                  >
+                                    Section {
+                                      reference
+                                    }
+                                  </button>
 
-                              ),
-                            )
-                        }
+                                ),
+                              )
+                          }
 
-                      </div>
+                        </div>
 
-                    )
-                    : (
+                      )
+                      : (
 
-                      <Empty
-                        text="No cross-references available."
-                      />
+                        <Empty
+                          text="No cross-references available."
+                        />
 
-                    )
+                      )
                   }
 
                 </InsightBlock>
