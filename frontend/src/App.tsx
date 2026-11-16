@@ -16,10 +16,6 @@ import {
 } from './features/Explore';
 
 import {
-  Placeholder,
-} from './features/Placeholder';
-
-import {
   SmartSearch,
 } from './features/SmartSearch';
 
@@ -34,6 +30,18 @@ import {
 import {
   CorpusOverview,
 } from './features/insights/CorpusOverview';
+
+import {
+  Bookmarks,
+} from './features/bookmarks/Bookmarks';
+
+import {
+  About,
+} from './features/about/About';
+
+import {
+  useBookmarks,
+} from './hooks/useBookmarks';
 
 import type {
   Navigate,
@@ -90,8 +98,11 @@ const metadata: Record<
 export default function App() {
 
   /*
-   * Current SPA module.
+   * =========================================================
+   * PRIMARY NAVIGATION
+   * =========================================================
    */
+
   const [
     page,
     setPage,
@@ -101,9 +112,11 @@ export default function App() {
 
 
   /*
-   * Query handed from Explore
-   * into Smart Search.
+   * =========================================================
+   * SMART SEARCH STATE
+   * =========================================================
    */
+
   const [
     searchQuery,
     setSearchQuery,
@@ -120,11 +133,13 @@ export default function App() {
 
 
   /*
-   * Section opened from Chapters.
+   * =========================================================
+   * CHAPTER STATE
+   * =========================================================
    *
-   * This remains separate from selectedSection
-   * so Back returns to the correct parent module.
+   * Section opened from Chapters.
    */
+
   const [
     chapterSection,
     setChapterSection,
@@ -132,16 +147,39 @@ export default function App() {
 
 
   /*
-   * Central SPA navigation.
+   * =========================================================
+   * BOOKMARK STATE
+   * =========================================================
    */
+
+  const bookmarkStore =
+    useBookmarks();
+
+
+  /*
+   * Section currently opened from
+   * the Bookmarks tab.
+   */
+  const [
+    bookmarkSection,
+    setBookmarkSection,
+  ] = useState('');
+
+
+  /*
+   * =========================================================
+   * CENTRAL SPA NAVIGATION
+   * =========================================================
+   */
+
   const navigate: Navigate = (
     nextPage,
     options,
   ) => {
 
     /*
-     * Preserve query handed in
-     * from Explore.
+     * Preserve a query handed from
+     * Explore into Smart Search.
      */
     if (
       options?.query !== undefined
@@ -154,8 +192,8 @@ export default function App() {
 
 
     /*
-     * Clear contextual Search section
-     * when leaving Search.
+     * Leaving Smart Search closes any
+     * contextual section opened from Search.
      */
     if (
       nextPage !== 'search'
@@ -166,14 +204,26 @@ export default function App() {
 
 
     /*
-     * Clear contextual Chapter section
-     * when leaving Chapters.
+     * Leaving Chapters closes any
+     * contextual section opened from Chapters.
      */
     if (
       nextPage !== 'chapters'
     ) {
 
       setChapterSection('');
+    }
+
+
+    /*
+     * Leaving Bookmarks closes any
+     * contextual section opened from Bookmarks.
+     */
+    if (
+      nextPage !== 'bookmarks'
+    ) {
+
+      setBookmarkSection('');
     }
 
 
@@ -188,18 +238,19 @@ export default function App() {
 
 
   /*
-   * -------------------------------------------------------
-   * MAIN SPA CONTENT RESOLVER
-   * -------------------------------------------------------
+   * =========================================================
+   * CONTENT RESOLVER
+   * =========================================================
    */
 
   const renderContent = () => {
 
     /*
-     * =====================================================
+     * -------------------------------------------------------
      * 4.2 EXPLORE
-     * =====================================================
+     * -------------------------------------------------------
      */
+
     if (
       page === 'explore'
     ) {
@@ -213,19 +264,18 @@ export default function App() {
 
 
     /*
-     * =====================================================
+     * -------------------------------------------------------
      * 4.3 SMART SEARCH
-     * =====================================================
+     * -------------------------------------------------------
      */
+
     if (
       page === 'search'
     ) {
 
       /*
-       * ---------------------------------------------------
-       * 4.4 SECTION DETAIL
-       * opened from Smart Search
-       * ---------------------------------------------------
+       * 4.4 Section Detail opened from
+       * Smart Search.
        */
       if (
         selectedSection
@@ -244,13 +294,25 @@ export default function App() {
             onOpenSection={
               setSelectedSection
             }
+
+            bookmarked={
+              bookmarkStore
+                .isBookmarked(
+                  selectedSection,
+                )
+            }
+
+            onToggleBookmark={
+              bookmarkStore
+                .toggleBookmark
+            }
           />
         );
       }
 
 
       /*
-       * Normal Smart Search workspace.
+       * Standard Smart Search.
        */
       return (
         <SmartSearch
@@ -267,19 +329,17 @@ export default function App() {
 
 
     /*
-     * =====================================================
+     * -------------------------------------------------------
      * 4.5 CHAPTERS
-     * =====================================================
+     * -------------------------------------------------------
      */
+
     if (
       page === 'chapters'
     ) {
 
       /*
-       * ---------------------------------------------------
-       * 4.4 SECTION DETAIL
-       * opened from Chapters
-       * ---------------------------------------------------
+       * Section Detail opened from Chapters.
        */
       if (
         chapterSection
@@ -298,13 +358,25 @@ export default function App() {
             onOpenSection={
               setChapterSection
             }
+
+            bookmarked={
+              bookmarkStore
+                .isBookmarked(
+                  chapterSection,
+                )
+            }
+
+            onToggleBookmark={
+              bookmarkStore
+                .toggleBookmark
+            }
           />
         );
       }
 
 
       /*
-       * Standard Chapters master/detail view.
+       * Standard Chapters workspace.
        */
       return (
         <Chapters
@@ -317,10 +389,11 @@ export default function App() {
 
 
     /*
-     * =====================================================
-     * 4.6A INSIGHTS - CORPUS OVERVIEW
-     * =====================================================
+     * -------------------------------------------------------
+     * 4.6A INSIGHTS / CORPUS OVERVIEW
+     * -------------------------------------------------------
      */
+
     if (
       page === 'insights'
     ) {
@@ -332,27 +405,109 @@ export default function App() {
 
 
     /*
-     * =====================================================
-     * FUTURE MODULES
-     * =====================================================
-     *
-     * Bookmarks and About continue to use the common
-     * placeholder until Phase 4.7.
+     * -------------------------------------------------------
+     * 4.7 BOOKMARKS
+     * -------------------------------------------------------
      */
-    return (
-      <Placeholder
-        title={
-          meta.title
-        }
-      />
-    );
+
+    if (
+      page === 'bookmarks'
+    ) {
+
+      /*
+       * Existing 4.4 Section Detail reused
+       * for sections opened from Bookmarks.
+       */
+      if (
+        bookmarkSection
+      ) {
+
+        return (
+          <SectionDetail
+            sectionNumber={
+              bookmarkSection
+            }
+
+            /*
+             * Back returns to Bookmarks.
+             */
+            onBack={() =>
+              setBookmarkSection('')
+            }
+
+            /*
+             * Related/cross-reference exploration
+             * remains inside the bookmark context.
+             */
+            onOpenSection={
+              setBookmarkSection
+            }
+
+            bookmarked={
+              bookmarkStore
+                .isBookmarked(
+                  bookmarkSection,
+                )
+            }
+
+            onToggleBookmark={
+              bookmarkStore
+                .toggleBookmark
+            }
+          />
+        );
+      }
+
+
+      return (
+        <Bookmarks
+          bookmarks={
+            bookmarkStore
+              .bookmarks
+          }
+
+          onOpenSection={
+            setBookmarkSection
+          }
+
+          onRemove={
+            bookmarkStore
+              .removeBookmark
+          }
+        />
+      );
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * 4.7 ABOUT
+     * -------------------------------------------------------
+     */
+
+    if (
+      page === 'about'
+    ) {
+
+      return (
+        <About />
+      );
+    }
+
+
+    /*
+     * This should not normally be reached because
+     * all Page values now have an implementation.
+     */
+
+    return null;
   };
 
 
   /*
-   * -------------------------------------------------------
-   * GLOBAL APPLICATION SHELL
-   * -------------------------------------------------------
+   * =========================================================
+   * GLOBAL LEGALVERSE SHELL
+   * =========================================================
    */
 
   return (
@@ -368,7 +523,7 @@ export default function App() {
     >
 
       {/*
-       * Persistent LegalVerse sidebar.
+       * Persistent navigation.
        */}
       <Sidebar
         page={page}
@@ -384,7 +539,7 @@ export default function App() {
 
 
       {/*
-       * Application workspace.
+       * Main research workspace.
        */}
       <main
         className="
@@ -396,7 +551,7 @@ export default function App() {
       >
 
         {/*
-         * Persistent context header.
+         * Context-aware header.
          */}
         <Header
           title={
@@ -410,7 +565,7 @@ export default function App() {
 
 
         {/*
-         * Module workspace.
+         * Current module.
          */}
         <div
           className="
